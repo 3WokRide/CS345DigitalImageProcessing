@@ -68,14 +68,14 @@
             // basicCopyToolStripMenuItem
             // 
             basicCopyToolStripMenuItem.Name = "basicCopyToolStripMenuItem";
-            basicCopyToolStripMenuItem.Size = new Size(270, 34);
+            basicCopyToolStripMenuItem.Size = new Size(208, 34);
             basicCopyToolStripMenuItem.Text = "Load Image";
             basicCopyToolStripMenuItem.Click += basicCopyToolStripMenuItem_Click;
             // 
             // saveImageToolStripMenuItem
             // 
             saveImageToolStripMenuItem.Name = "saveImageToolStripMenuItem";
-            saveImageToolStripMenuItem.Size = new Size(270, 34);
+            saveImageToolStripMenuItem.Size = new Size(208, 34);
             saveImageToolStripMenuItem.Text = "Save Image";
             saveImageToolStripMenuItem.Click += saveImageToolStripMenuItem_Click;
             // 
@@ -105,18 +105,21 @@
             colorInversionToolStripMenuItem.Name = "colorInversionToolStripMenuItem";
             colorInversionToolStripMenuItem.Size = new Size(270, 34);
             colorInversionToolStripMenuItem.Text = "Color Inversion";
+            colorInversionToolStripMenuItem.Click += colorInversionToolStripMenuItem_Click;
             // 
             // histogramToolStripMenuItem1
             // 
             histogramToolStripMenuItem1.Name = "histogramToolStripMenuItem1";
             histogramToolStripMenuItem1.Size = new Size(270, 34);
             histogramToolStripMenuItem1.Text = "Histogram";
+            histogramToolStripMenuItem1.Click += histogramToolStripMenuItem1_Click;
             // 
             // sepiaToolStripMenuItem
             // 
             sepiaToolStripMenuItem.Name = "sepiaToolStripMenuItem";
             sepiaToolStripMenuItem.Size = new Size(270, 34);
             sepiaToolStripMenuItem.Text = "Sepia";
+            sepiaToolStripMenuItem.Click += sepiaToolStripMenuItem_Click;
             // 
             // pictureBox1
             // 

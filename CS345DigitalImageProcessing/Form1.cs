@@ -73,5 +73,81 @@ namespace CS345DigitalImageProcessing
 
             pictureBox2.Image = output;
         }
+
+        private void colorInversionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Bitmap original = new Bitmap(pictureBox1.Image);
+            Bitmap output = new Bitmap(original.Width, original.Height);
+
+            for (int x = 0; x < original.Width; x++)
+            {
+                for (int y = 0; y < original.Height; y++)
+                {
+                    Color pixelColor = original.GetPixel(x, y);
+                    output.SetPixel(x, y, Color.FromArgb(255 - pixelColor.R, 255 - pixelColor.G, 255 - pixelColor.B));
+                }
+            }
+
+            pictureBox2.Image = output;
+        }
+
+        private void sepiaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Bitmap original = new Bitmap(pictureBox1.Image);
+            Bitmap output = new Bitmap(original.Width, original.Height);
+
+            for (int x = 0; x < original.Width; x++)
+            {
+                for (int y = 0; y < original.Height; y++)
+                {
+                    Color pixelColor = original.GetPixel(x, y);
+                    int red = Math.Clamp((int)(0.393 * pixelColor.R + 0.769 * pixelColor.G + 0.189 * pixelColor.B), 0, 255);
+                    int green = Math.Clamp((int)(0.349 * pixelColor.R + 0.686 * pixelColor.G + 0.168 * pixelColor.B), 0, 255);
+                    int blue = Math.Clamp((int)(0.272 * pixelColor.R + 0.534 * pixelColor.G + 0.131 * pixelColor.B), 0, 255);
+                    output.SetPixel(x, y, Color.FromArgb(red, green, blue));
+                }
+            }
+
+            pictureBox2.Image = output;
+        }
+
+        private void histogramToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            int[] histogram = new int[256];
+            Bitmap original = new Bitmap(pictureBox1.Image);
+
+            for (int x = 0; x < original.Width; x++)
+            {
+                for (int y = 0; y < original.Height; y++)
+                {
+                    Color pixelColor = original.GetPixel(x, y);
+                    int greyColor = (pixelColor.R + pixelColor.G + pixelColor.B) / 3;
+                    histogram[greyColor]++;
+                }
+            }
+
+            // Draw to screen
+            int width = 256;                 
+            int height = 200;                
+
+            Bitmap bmp = new Bitmap(width, height);
+            using (Graphics g = Graphics.FromImage(bmp))
+            {
+                g.Clear(Color.White);
+
+                int max = histogram.Max();
+
+                for (int i = 0; i < 256; i++)
+                {
+                    int barHeight = (int)((histogram[i] / (float)max) * height);
+
+                    g.DrawLine(Pens.Black,
+                        i, height - 1,            
+                        i, height - barHeight);   
+                }
+            }
+
+            pictureBox2.Image = bmp;
+        }
     }
 }
