@@ -92,6 +92,23 @@ namespace CS345DigitalImageProcessing
                                     pictureBox2.Image = histImage;
                                     break;
                                 case CurrentFilter.Subtraction:
+                                    if (pictureBox3.Image == null)
+                                    {
+                                        MessageBox.Show("Please load a background image first.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                        currentFilter = CurrentFilter.None;
+                                        break;
+                                    }
+                                    Mat background = BitmapConverter.ToMat((Bitmap)pictureBox3.Image);
+                                    try
+                                    {
+                                        Mat result = Filters.SubtractGreen(ref frame, ref background);
+                                        pictureBox2.Image = BitmapConverter.ToBitmap(result);
+                                    } catch (ArgumentException ex)
+                                    {
+                                        MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                        currentFilter = CurrentFilter.None;
+                                        break;
+                                    }
                                     break;
                                 default:
                                     break;
@@ -437,5 +454,43 @@ namespace CS345DigitalImageProcessing
             return histImage;
         }
 
+        public static Mat SubtractGreen(ref Mat frame, ref Mat background, int threshold = 50)
+        {
+            if (frame.Size() != background.Size())
+                throw new ArgumentException("Frame and background must have the same size.");
+            if (frame.Channels() != 3 || background.Channels() != 3)
+                throw new ArgumentException("Only 3-channel BGR images are supported.");
+
+            Mat result = new Mat(frame.Size(), frame.Type());
+
+            // Split channels
+            Mat[] bgr = Cv2.Split(frame);
+            Mat B = bgr[0];
+            Mat G = bgr[1];
+            Mat R = bgr[2];
+
+            // mask = pixels where G is significantly higher than R and B
+            Mat mask = new Mat();
+            Mat tmp1 = new Mat(), tmp2 = new Mat();
+
+            Cv2.Subtract(G, R, tmp1);
+            Cv2.Subtract(G, B, tmp2);
+            Cv2.Min(tmp1, tmp2, mask);       // take min(G-R, G-B)
+            Cv2.Threshold(mask, mask, threshold, 255, ThresholdTypes.Binary);
+
+            // Convert mask to 3 channels
+            Mat mask3 = new Mat();
+            Cv2.CvtColor(mask, mask3, ColorConversionCodes.GRAY2BGR);
+
+            // Invert mask
+            Mat mask3Inv = new Mat();
+            Cv2.BitwiseNot(mask3, mask3Inv);
+
+            // Apply mask: frame where mask inverted, background where mask
+            frame.CopyTo(result, mask3Inv);      // keep pixels that are NOT green
+            background.CopyTo(result, mask3);    // replace green with background
+
+            return result;
+        }
     }
 }
