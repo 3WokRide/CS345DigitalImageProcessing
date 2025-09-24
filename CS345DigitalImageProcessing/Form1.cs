@@ -127,8 +127,8 @@ namespace CS345DigitalImageProcessing
             }
 
             // Draw to screen
-            int width = 256;                 
-            int height = 200;                
+            int width = 256;
+            int height = 200;
 
             Bitmap bmp = new Bitmap(width, height);
             using (Graphics g = Graphics.FromImage(bmp))
@@ -142,12 +142,17 @@ namespace CS345DigitalImageProcessing
                     int barHeight = (int)((histogram[i] / (float)max) * height);
 
                     g.DrawLine(Pens.Black,
-                        i, height - 1,            
-                        i, height - barHeight);   
+                        i, height - 1,
+                        i, height - barHeight);
                 }
             }
 
             pictureBox2.Image = bmp;
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
