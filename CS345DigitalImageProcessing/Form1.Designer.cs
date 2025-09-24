@@ -39,6 +39,9 @@
             colorInversionToolStripMenuItem = new ToolStripMenuItem();
             histogramToolStripMenuItem1 = new ToolStripMenuItem();
             sepiaToolStripMenuItem = new ToolStripMenuItem();
+            subtractToolStripMenuItem = new ToolStripMenuItem();
+            webCamToolStripMenuItem = new ToolStripMenuItem();
+            startCameraToolStripMenuItem = new ToolStripMenuItem();
             pictureBox1 = new PictureBox();
             pictureBox2 = new PictureBox();
             label1 = new Label();
@@ -46,6 +49,7 @@
             openFileDialog1 = new OpenFileDialog();
             pictureBox3 = new PictureBox();
             label3 = new Label();
+            stopCameraToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
@@ -55,7 +59,7 @@
             // menuStrip1
             // 
             menuStrip1.ImageScalingSize = new Size(24, 24);
-            menuStrip1.Items.AddRange(new ToolStripItem[] { basicToolStripMenuItem, colorToolStripMenuItem });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { basicToolStripMenuItem, colorToolStripMenuItem, webCamToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new Size(1112, 33);
@@ -81,6 +85,7 @@
             loadBackgroundSubtractionToolStripMenuItem.Name = "loadBackgroundSubtractionToolStripMenuItem";
             loadBackgroundSubtractionToolStripMenuItem.Size = new Size(359, 34);
             loadBackgroundSubtractionToolStripMenuItem.Text = "Load Background (Subtraction)";
+            loadBackgroundSubtractionToolStripMenuItem.Click += loadBackgroundSubtractionToolStripMenuItem_Click;
             // 
             // saveImageToolStripMenuItem
             // 
@@ -91,7 +96,7 @@
             // 
             // colorToolStripMenuItem
             // 
-            colorToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { basicCopyToolStripMenuItem1, greyscaleToolStripMenuItem, colorInversionToolStripMenuItem, histogramToolStripMenuItem1, sepiaToolStripMenuItem });
+            colorToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { basicCopyToolStripMenuItem1, greyscaleToolStripMenuItem, colorInversionToolStripMenuItem, histogramToolStripMenuItem1, sepiaToolStripMenuItem, subtractToolStripMenuItem });
             colorToolStripMenuItem.Name = "colorToolStripMenuItem";
             colorToolStripMenuItem.Size = new Size(66, 29);
             colorToolStripMenuItem.Text = "Filter";
@@ -130,6 +135,27 @@
             sepiaToolStripMenuItem.Size = new Size(234, 34);
             sepiaToolStripMenuItem.Text = "Sepia";
             sepiaToolStripMenuItem.Click += sepiaToolStripMenuItem_Click;
+            // 
+            // subtractToolStripMenuItem
+            // 
+            subtractToolStripMenuItem.Name = "subtractToolStripMenuItem";
+            subtractToolStripMenuItem.Size = new Size(234, 34);
+            subtractToolStripMenuItem.Text = "Subtract";
+            subtractToolStripMenuItem.Click += subtractToolStripMenuItem_Click;
+            // 
+            // webCamToolStripMenuItem
+            // 
+            webCamToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { startCameraToolStripMenuItem, stopCameraToolStripMenuItem });
+            webCamToolStripMenuItem.Name = "webCamToolStripMenuItem";
+            webCamToolStripMenuItem.Size = new Size(100, 29);
+            webCamToolStripMenuItem.Text = "WebCam";
+            // 
+            // startCameraToolStripMenuItem
+            // 
+            startCameraToolStripMenuItem.Name = "startCameraToolStripMenuItem";
+            startCameraToolStripMenuItem.Size = new Size(270, 34);
+            startCameraToolStripMenuItem.Text = "Start Camera";
+            startCameraToolStripMenuItem.Click += startCameraToolStripMenuItem_Click;
             // 
             // pictureBox1
             // 
@@ -192,6 +218,13 @@
             label3.TabIndex = 6;
             label3.Text = "Background";
             // 
+            // stopCameraToolStripMenuItem
+            // 
+            stopCameraToolStripMenuItem.Name = "stopCameraToolStripMenuItem";
+            stopCameraToolStripMenuItem.Size = new Size(270, 34);
+            stopCameraToolStripMenuItem.Text = "Stop Camera";
+            stopCameraToolStripMenuItem.Click += stopCameraToolStripMenuItem_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
@@ -207,6 +240,7 @@
             MainMenuStrip = menuStrip1;
             Name = "Form1";
             Text = "Form1";
+            FormClosing += Form1_FormClosing;
             Load += Form1_Load;
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
@@ -237,5 +271,9 @@
         private PictureBox pictureBox3;
         private Label label3;
         private ToolStripMenuItem loadBackgroundSubtractionToolStripMenuItem;
+        private ToolStripMenuItem subtractToolStripMenuItem;
+        private ToolStripMenuItem webCamToolStripMenuItem;
+        private ToolStripMenuItem startCameraToolStripMenuItem;
+        private ToolStripMenuItem stopCameraToolStripMenuItem;
     }
 }
