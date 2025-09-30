@@ -1,6 +1,8 @@
 using OpenCvSharp;
 using OpenCvSharp.Extensions;
+using System.Drawing.Imaging;
 using System.Windows.Forms;
+using System.Xml.Serialization;
 
 namespace CS345DigitalImageProcessing
 {
@@ -27,7 +29,17 @@ namespace CS345DigitalImageProcessing
             ColorInversion,
             Sepia,
             Histogram,
-            Subtraction
+            Subtraction,
+            Smoothing,
+            GaussianBlur,
+            Sharpen,
+            MeanRemoval,
+            EmbossingLaplacian,
+            EmbossHorzVert,
+            EmbossAll,
+            EmbossLossy,
+            EmbossHorz,
+            EmbossVert
         }
 
         private async void StartCamera()
@@ -103,12 +115,53 @@ namespace CS345DigitalImageProcessing
                                     {
                                         Mat result = Filters.SubtractGreen(ref frame, ref background);
                                         pictureBox2.Image = BitmapConverter.ToBitmap(result);
-                                    } catch (ArgumentException ex)
+                                    }
+                                    catch (ArgumentException ex)
                                     {
                                         MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                         currentFilter = CurrentFilter.None;
                                         break;
                                     }
+                                    break;
+                                case CurrentFilter.Smoothing:
+                                    Filters.Smoothing(ref frame, ref frame);
+                                    pictureBox2.Image = BitmapConverter.ToBitmap(frame);
+                                    break;
+                                case CurrentFilter.GaussianBlur:
+                                    Filters.GaussianBlur(ref frame, ref frame);
+                                    pictureBox2.Image = BitmapConverter.ToBitmap(frame);
+                                    break;
+                                case CurrentFilter.Sharpen:
+                                    Filters.Sharpen(ref frame, ref frame);
+                                    pictureBox2.Image = BitmapConverter.ToBitmap(frame);
+                                    break;
+                                case CurrentFilter.MeanRemoval:
+                                    Filters.MeanRemoval(ref frame, ref frame);
+                                    pictureBox2.Image = BitmapConverter.ToBitmap(frame);
+                                    break;
+                                case CurrentFilter.EmbossingLaplacian:
+                                    Filters.EmbossingLaplacian(ref frame, ref frame);
+                                    pictureBox2.Image = BitmapConverter.ToBitmap(frame);
+                                    break;
+                                case CurrentFilter.EmbossHorzVert:
+                                    Filters.EmbossingHorzVert(ref frame, ref frame);
+                                    pictureBox2.Image = BitmapConverter.ToBitmap(frame);
+                                    break;
+                                case CurrentFilter.EmbossAll:
+                                    Filters.EmbossingAll(ref frame, ref frame);
+                                    pictureBox2.Image = BitmapConverter.ToBitmap(frame);
+                                    break;
+                                case CurrentFilter.EmbossLossy:
+                                    Filters.EmbossingLossy(ref frame, ref frame);
+                                    pictureBox2.Image = BitmapConverter.ToBitmap(frame);
+                                    break;
+                                case CurrentFilter.EmbossHorz:
+                                    Filters.EmbossingHorz(ref frame, ref frame);
+                                    pictureBox2.Image = BitmapConverter.ToBitmap(frame);
+                                    break;
+                                case CurrentFilter.EmbossVert:
+                                    Filters.EmbossingVert(ref frame, ref frame);
+                                    pictureBox2.Image = BitmapConverter.ToBitmap(frame);
                                     break;
                                 default:
                                     break;
@@ -152,6 +205,26 @@ namespace CS345DigitalImageProcessing
                 pictureBox1.Image = new Bitmap(openFileDialog1.FileName);
                 pictureBox2.Image = null;
             }
+        }
+
+        private delegate void FilterDelegate(ref Mat source, ref Mat output);
+
+        // returns whether filter application is successful or not
+        private bool applyFilter(FilterDelegate filter)
+        {
+            if (pictureBox1.Image == null)
+            {
+                MessageBox.Show("No image loaded to apply filter.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+            Bitmap original = new Bitmap(pictureBox1.Image);
+            Mat source = BitmapConverter.ToMat(original);
+            Mat output = new Mat();
+
+            filter(ref source, ref output);
+
+            pictureBox2.Image = BitmapConverter.ToBitmap(output);
+            return true;
         }
 
         private void basicCopyToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -329,6 +402,67 @@ namespace CS345DigitalImageProcessing
             else
                 MessageBox.Show("Camera is not running.");
         }
+
+        private void smoothingToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            currentFilter = CurrentFilter.Smoothing;
+            bool result = applyFilter(Filters.Smoothing);
+        }
+
+        private void gaussianBlurToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+            currentFilter = CurrentFilter.GaussianBlur;
+            bool result = applyFilter(Filters.GaussianBlur);
+        }
+
+        private void sharpenToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            currentFilter = CurrentFilter.Sharpen;
+            bool result = applyFilter(Filters.Sharpen);
+        }
+
+        private void meanRemovalToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            currentFilter = CurrentFilter.MeanRemoval;
+            bool result = applyFilter(Filters.MeanRemoval);
+        }
+
+        private void embossLaplascianToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            currentFilter = CurrentFilter.EmbossingLaplacian;
+            bool result = applyFilter(Filters.EmbossingLaplacian);
+        }
+
+        private void horizontalVerticalToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            currentFilter = CurrentFilter.EmbossHorzVert;
+            bool result = applyFilter(Filters.EmbossingHorzVert);
+        }
+
+        private void allDirectionsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            currentFilter = CurrentFilter.EmbossAll;
+            bool result = applyFilter(Filters.EmbossingAll);
+        }
+
+        private void lossyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            currentFilter = CurrentFilter.EmbossLossy;
+            bool result = applyFilter(Filters.EmbossingLossy);
+        }
+
+        private void horizontalOnlyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            currentFilter = CurrentFilter.EmbossHorz;
+            bool result = applyFilter(Filters.EmbossingHorz);
+        }
+
+        private void vertciaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            currentFilter = CurrentFilter.EmbossVert;
+            bool result = applyFilter(Filters.EmbossingVert);
+        }
     }
 
     static class Filters
@@ -491,6 +625,121 @@ namespace CS345DigitalImageProcessing
             background.CopyTo(result, mask3);    // replace green with background
 
             return result;
+        }
+
+        public static void Smoothing(ref Mat original, ref Mat output)
+        {
+            Mat kernel = Mat.FromArray(new float[,]{
+                {1, 1, 1 },
+                {1, 5, 1 },
+                {1, 1, 1 }
+            });
+            kernel /= 13;
+            Cv2.Filter2D(original, output, -1, kernel);
+        }
+
+        public static void GaussianBlur(ref Mat original, ref Mat output)
+        {
+            Mat kernel = Mat.FromArray(new float[,]{
+                {1, 2, 1},
+                {1, 4, 1 },
+                {1, 2, 1 }
+            });
+            kernel /= 16;
+            Cv2.Filter2D(original, output, -1, kernel);
+        }
+
+        public static void Sharpen(ref Mat original, ref Mat output)
+        {
+            Mat kernel = Mat.FromArray(new float[,]{
+                { 0, -2, 0 },
+                { -2, 11, -2 },
+                { 0, -2, 0 }
+            });
+            kernel /= 3;
+            Cv2.Filter2D(original, output, -1, kernel);
+        }
+
+        public static void MeanRemoval(ref Mat original, ref Mat output)
+        {
+            Mat kernel = Mat.FromArray(new float[,]{
+                { -1, -1, -1 },
+                { -1, 9, -1 },
+                { -1, -1, -1 }
+            });
+            Cv2.Filter2D(original, output, -1, kernel);
+        }
+
+        public static void EmbossingLaplacian(ref Mat original, ref Mat output)
+        {
+            Mat kernel = Mat.FromArray(new float[,]{
+                { -1, 0, -1 },
+                { 0, 4, 0 },
+                { -1, 0, -1 }
+            });
+            Cv2.Filter2D(original, output, -1, kernel);
+            Cv2.Add(output, 127, output);
+            Cv2.ConvertScaleAbs(output, output);
+        }
+
+        public static void EmbossingHorzVert(ref Mat original, ref Mat output)
+        {
+            Mat kernel = Mat.FromArray(new float[,]{
+                {0, -1, 0 },
+                {-1, 4, -1 },
+                {0, -1, 0 }
+            });
+            Cv2.Filter2D(original, output, -1, kernel);
+            Cv2.Add(output, 127, output);
+            Cv2.ConvertScaleAbs(output, output);
+        }
+
+        public static void EmbossingAll(ref Mat original, ref Mat output)
+        {
+            Mat kernel = Mat.FromArray(new float[,]{
+                {-1, -1, -1},
+                {-1, 8, -1 },
+                {-1, -1, -1 }
+            });
+            Cv2.Filter2D(original, output, -1, kernel);
+            Cv2.Add(output, 127, output);
+            Cv2.ConvertScaleAbs(output, output);
+        }
+
+        public static void EmbossingLossy(ref Mat original, ref Mat output)
+        {
+            Mat kernel = Mat.FromArray(new float[,]{
+                {1, -2, 1},
+                {-2, 4, -2},
+                {-2, 1, -2}
+            });
+            Cv2.Filter2D(original, output, -1, kernel);
+            Cv2.Add(output, 127, output);
+            Cv2.ConvertScaleAbs(output, output);
+        }
+
+        public static void EmbossingHorz(ref Mat original, ref Mat output)
+        {
+            Mat kernel = Mat.FromArray(new float[,]{
+                {0, 0, 0},
+                {-1, 2, -1},
+                {0, 0, 0}
+            });
+            Cv2.Filter2D(original, output, -1, kernel);
+            Cv2.Add(output, 127, output);
+            Cv2.ConvertScaleAbs(output, output);
+        }
+
+        public static void EmbossingVert(ref Mat original, ref Mat output)
+        {
+            Mat kernel = Mat.FromArray(new float[,]{
+                {0, -1, 0},
+                {0, 0, 0},
+                {0, 1, 0}
+            });
+            Cv2.Filter2D(original, output, -1, kernel);
+            Cv2.Add(output, 127, output);
+            Cv2.ConvertScaleAbs(output, output);
         }
     }
 }
